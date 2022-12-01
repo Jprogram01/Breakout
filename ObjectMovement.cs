@@ -10,9 +10,12 @@ class ObjectMovement: Velocity
     Ball Ball = new Ball();
     Paddle Paddle = new Paddle();
 
+
+
     Collision Collision = new Collision();
 
     float OldX;
+    public bool BallOutOfBounds;
 
 public ObjectMovement()
 {
@@ -45,6 +48,18 @@ public void PaddleMovement()
     else if (Ball.Launch == true)
     {
     BallFlying();
+    BallOutOfBounds = CheckOutOfBounds();
+    // Console.Write(BallOutOfBounds);
+
+    if (BallOutOfBounds == true)
+    {
+    Ball.BallCenter.X = Paddle.MovingPaddle.x + 60;
+    Ball.BallCenter.Y = Paddle.MovingPaddle.y - 10;
+    Ball.Launch = false;
+    
+    
+    }
+    
     }
 }
 
@@ -56,6 +71,14 @@ public void PaddleMovement()
     MovingBall(YDirection, XDirection);
     DrawCircleV(Ball.BallCenter, 10, BLACK);
     
+    }
+
+    public bool CheckOutOfBounds()
+    {
+        var BallOutOfBounds = false;
+        if (Ball.BallCenter.Y >= 900)
+            BallOutOfBounds = true;
+            return BallOutOfBounds;
     }
 
     public bool BallPaddleCollision()

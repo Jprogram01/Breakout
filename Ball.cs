@@ -15,12 +15,17 @@ Paddle Paddle = new Paddle();
 Dictionary<int, Tuple<Vector2, bool, int>> Balls = new Dictionary<int, Tuple<Vector2, bool, int >>();
 public Vector2 BallCenter = new Vector2();
 
+public float BallOnPaddleX;
+public float BallOnPaddleY;
 public bool Launch;
 
 public Ball()
 {
-BallCenter.X = Paddle.MovingPaddle.x + 60;
-BallCenter.Y = Paddle.MovingPaddle.y - 10;
+BallOnPaddleX = Paddle.MovingPaddle.x + 60;
+BallOnPaddleY = Paddle.MovingPaddle.y - 10;
+BallCenter.X = BallOnPaddleX;
+BallCenter.Y = BallOnPaddleY;
+
 YSpeed = 12;
 XSpeed = 10;
 SideWaysDirection = 0;
