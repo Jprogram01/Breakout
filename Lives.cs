@@ -6,56 +6,42 @@ using static Raylib_cs.PixelFormat;
 
 class PlayerLives
 {
-ObjectMovement ObjectMovement = new ObjectMovement();
+
+BallObjectMovement Ball = new BallObjectMovement();
 public int Lives;
 public bool GameOver;
 
+
 public PlayerLives()
-{
+{   
     Lives = 3;
     GameOver = false;
 }
 
-public bool PlayerLivesDisplay()
+public bool PlayerLivesDisplay(Vector2 BallCenter)
 {
-    Console.WriteLine(Lives);
     if (GameOver == false)
     {
-        UpdateLives(ObjectMovement.BallOutOfBounds);
-        Console.Write(ObjectMovement.BallOutOfBounds);
-        DisplayLives();
+        UpdateLives(Ball.CheckOutOfBounds(BallCenter));
         GameOver = IsGameOver();
     }
     return GameOver;
     
 }
 
-public void UpdateLives(bool result)
+private void UpdateLives(bool result)
 {
 if (result == true)
 {
-    Lives -= 1;
+    Lives = (Lives - 1);
 }
 // if (result == false)
 // {
 //     Lives += 1;
 // }
-}
-public void DisplayLives()
-{
-for (int i = 0; i == Lives; i++ )
-{
-    var BallPositionChanger = i * 10;
-    var XPosition = 50;
-    var YPosition = 450;
-    Vector2 LivesBallCenter;
-    LivesBallCenter.X = XPosition + BallPositionChanger;
-    LivesBallCenter.Y = YPosition;
 
+}
 
-    DrawCircleV(LivesBallCenter, 10, BLACK);
-}
-}
 
 
 

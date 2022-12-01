@@ -17,7 +17,6 @@ public Vector2 BallCenter = new Vector2();
 
 public float BallOnPaddleX;
 public float BallOnPaddleY;
-public bool Launch;
 
 public Ball()
 {
@@ -26,10 +25,7 @@ BallOnPaddleY = Paddle.MovingPaddle.y - 10;
 BallCenter.X = BallOnPaddleX;
 BallCenter.Y = BallOnPaddleY;
 
-YSpeed = 12;
-XSpeed = 10;
-SideWaysDirection = 0;
-Launch = false;
+
 }
 
 public void AddFirstBall()

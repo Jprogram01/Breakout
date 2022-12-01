@@ -13,10 +13,10 @@ class Program
            public static void Main()
         {
             //sets things up
-            // Ball Ball = new Ball();
-            // Paddle Paddle = new Paddle();
             ObjectMovement MovingObjects = new ObjectMovement();
             PlayerLives PlayerLives = new PlayerLives();
+            TopDisplay TopDisplay = new TopDisplay();
+            Score Score = new Score();
             var ScreenHeight = 900;
             var ScreenWidth = 1100;
             bool GameOver = false;
@@ -35,17 +35,17 @@ class Program
                 if (GameOver == false)
                 {
                 Raylib.BeginDrawing();
-                Raylib.ClearBackground(Color.WHITE);
-                MovingObjects.BallObjectMovement();
-                MovingObjects.PaddleMovement();
-                GameOver = PlayerLives.PlayerLivesDisplay();
+                Raylib.ClearBackground(Color.BLACK);
+                MovingObjects.ObjectsMoving();
+                TopDisplay.DisplayAll(PlayerLives.Lives, Score.score);
+                GameOver = PlayerLives.PlayerLivesDisplay(MovingObjects.Ball.BallCenter);
                 Raylib.EndDrawing();
                 }
                 else if (GameOver == true)
                 {
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.BLACK);
-                DrawText("You LOST!!!", 400, 450, 20, Color.RED); 
+                DrawText("You LOST!!!", 300, 450, 100, Color.RED); 
                 Raylib.EndDrawing();
                 }
             }

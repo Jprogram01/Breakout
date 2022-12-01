@@ -9,15 +9,22 @@ class Collision: Velocity
 {
     Ball Ball = new Ball();
     Paddle Paddle = new Paddle();
-
-
+    public bool CollisionBool;
+public Collision()
+{
+    CollisionBool = false;
+}
     public bool BallPaddleCollision(Vector2 FirstObject, Rectangle SecondObject)
     {
-    var CollisionBool = false;
+    
     if (CheckCollisionCircleRec(FirstObject, 10, SecondObject))
     {
         CollisionBool = true;
        
+    }
+    else
+    {
+        CollisionBool = false;
     }
     return CollisionBool;
     }

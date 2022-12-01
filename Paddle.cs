@@ -17,7 +17,6 @@ public Paddle()
 {
 MovingPaddle.x = 490;
 MovingPaddle.y = 870;
-PaddleSpeed = 10;
 }
 
 public void PaddleObject()
