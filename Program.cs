@@ -16,6 +16,7 @@ class Program
             ObjectMovement MovingObjects = new ObjectMovement();
             PlayerLives PlayerLives = new PlayerLives();
             TopDisplay TopDisplay = new TopDisplay();
+            BlockList BlocksList = new BlockList();
             Score Score = new Score();
             var ScreenHeight = 900;
             var ScreenWidth = 1100;
@@ -37,6 +38,7 @@ class Program
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.BLACK);
                 MovingObjects.ObjectsMoving();
+                BlocksList.DrawBlocks();
                 TopDisplay.DisplayAll(PlayerLives.Lives, Score.score);
                 GameOver = PlayerLives.PlayerLivesDisplay(MovingObjects.Ball.BallCenter);
                 Raylib.EndDrawing();

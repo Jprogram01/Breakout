@@ -7,7 +7,7 @@ using static Raylib_cs.PixelFormat;
 
 
 
-class Paddle: Velocity
+class Paddle: MovementDirection
 {
 
 public Rectangle MovingPaddle = new Rectangle(-0, 0, 120, 15);

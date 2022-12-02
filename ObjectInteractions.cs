@@ -5,19 +5,84 @@ using static Raylib_cs.Color;
 using static Raylib_cs.PixelFormat;
 
 
-class ObjectMovement: Velocity
+class ObjectMovement: MovementDirection
 {
     public BallObjectMovement Ball = new BallObjectMovement();
     public PaddleObjectMovement  Paddle = new PaddleObjectMovement();
     public Collision Collision = new Collision();
 
+    public BlockList BlockList = new BlockList();
+    
+    public Dictionary<int, List<Blocks>> BlockDictionary;
 
+public ObjectMovement()
+{
+    BlockDictionary = BlockList.CreateDictionary();
+}
 public void ObjectsMoving()
 {
     UpdateBallXandYDirection(Ball.BallCenter, Paddle.MovingPaddle);
     Ball.BallCenter = Ball.BallMovement(Ball.BallCenter, Paddle.MovingPaddle, GoingUp, SideWaysDirection);
     Paddle.PaddleMovement();
+    BlockFunctions(Ball.BallCenter);
 }
+
+
+public void BlockFunctions(Vector2 Ball)
+{
+    CollisionBallBlock(Ball);
+    DrawBlocks();
+}
+public void DrawBlocks()
+{
+    for (int i = 0; i < BlockDictionary.Count(); i++)
+    {
+    for (int n = 0; n < BlockDictionary[i].Count(); n++)
+    {
+        DrawRectangleRec(BlockDictionary[i][n].Block, BlockDictionary[i][n].Color);
+    }
+    }
+}
+public void CollisionBallBlock(Vector2 BallObject)
+{
+bool BlockCollision = false;
+for (int i = 0; i < BlockDictionary.Count(); i++)
+    {
+    for (int n = 0; n < BlockDictionary[i].Count(); n++)
+    {
+
+        BlockCollision = Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block);
+        if (BlockCollision == true)
+        {
+        if (BallObject.X <= BlockDictionary[i][n].Block.x + 50 && BallObject.X >= BlockDictionary[i][n].Block.x)
+        {
+            if (BallObject.Y > BlockDictionary[i][n].Block.y)
+            {
+                GoingUp = false;
+            }
+            else if (BallObject.Y < BlockDictionary[i][n].Block.y + 20)
+            {
+                GoingUp = true;
+            }
+        }
+        if (BallObject.Y <= BlockDictionary[i][n].Block.y + 20 && BallObject.Y >= BlockDictionary[i][n].Block.y)
+        {
+            Console.WriteLine("true");
+            if (BallObject.X < BlockDictionary[i][n].Block.x + 50)
+            {
+                SideWaysDirection = 2;
+            }
+            else if (BallObject.X > BlockDictionary[i][n].Block.x)
+            {
+                SideWaysDirection = 1;
+            }
+        }
+        BlockDictionary[i].Remove(BlockDictionary[i][n]);
+        }
+        
+    }
+    }
+}   
 
 // Changea the direction of both X and Y direction of ball.
 public void UpdateBallXandYDirection(Vector2 BallObject, Rectangle PaddleObject)

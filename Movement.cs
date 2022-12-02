@@ -1,4 +1,4 @@
-class Velocity: Frame
+class MovementDirection: Frame
 {
 public int YSpeed;
 
@@ -10,11 +10,11 @@ public bool GoingUp;
 
 public int SideWaysDirection;
 
-public Velocity()
+public MovementDirection()
 {
-PaddleSpeed = 10;
-YSpeed = 12;
-XSpeed = 10;
+PaddleSpeed = 14;
+YSpeed = 10;
+XSpeed = 8;
 SideWaysDirection = 0;
 }
 

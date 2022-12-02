@@ -7,7 +7,7 @@ using static Raylib_cs.PixelFormat;
 
 
 
-class Ball: Velocity
+class Ball: MovementDirection
 {
 
 Paddle Paddle = new Paddle();

@@ -35,11 +35,6 @@ if (result == true)
 {
     Lives = (Lives - 1);
 }
-// if (result == false)
-// {
-//     Lives += 1;
-// }
-
 }
 
 
