@@ -11,6 +11,8 @@ int XPosition;
 int YPosition;
 
 public Color Color;
+
+public string ColorString;
 public Rectangle Block = new Rectangle(0, 0, 50, 20);
 
 public Blocks(int X, int Y, Color ColorForBlock)
@@ -21,5 +23,6 @@ public Blocks(int X, int Y, Color ColorForBlock)
     Block.x = XPosition;
     Block.y = YPosition;
     Color = ColorForBlock;
+    ColorString = Color.ToString();
 }
 }

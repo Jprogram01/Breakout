@@ -10,28 +10,142 @@ class ObjectMovement: MovementDirection
     public BallObjectMovement Ball = new BallObjectMovement();
     public PaddleObjectMovement  Paddle = new PaddleObjectMovement();
     public Collision Collision = new Collision();
-
-    public BlockList BlockList = new BlockList();
     
-    public Dictionary<int, List<Blocks>> BlockDictionary;
+    public BlockList BlockList = new BlockList();
+    public Score Score = new Score();
 
-public ObjectMovement()
-{
-    BlockDictionary = BlockList.CreateDictionary();
-}
+    public List<DifferentBalls> PowerUpBallList = new List<DifferentBalls>();
+    public int Runner = 0;
+    public int PowerUpframes = 0;
+
+    public bool BlueOn = false;
+    public bool PowerUpSKYBLUE = false;
+    
+    public Dictionary<int, List<Blocks>> BlockDictionary = new Dictionary<int, List<Blocks>>();
+
 public void ObjectsMoving()
 {
     UpdateBallXandYDirection(Ball.BallCenter, Paddle.MovingPaddle);
     Ball.BallCenter = Ball.BallMovement(Ball.BallCenter, Paddle.MovingPaddle, GoingUp, SideWaysDirection);
     Paddle.PaddleMovement();
-    BlockFunctions(Ball.BallCenter);
+    BlockFunctions(Ball.BallCenter, Paddle.MovingPaddle);
+    PointUpdater(Ball.BallCenter, Paddle.MovingPaddle);
+    DevTools();
 }
 
 
-public void BlockFunctions(Vector2 Ball)
+public void BlockFunctions(Vector2 Ball, Rectangle Paddle)
 {
-    CollisionBallBlock(Ball);
+    RemoveFarBlocks();
     DrawBlocks();
+    PowerUpRunner(Ball, Paddle);
+}
+
+public void PowerUpRunner(Vector2 Ball, Rectangle Paddle)
+{
+if (BlueOn)
+{
+    BluePowerUpRunner();
+}
+var Remove = false;
+var PowerUpBall = CollisionBallBlock(Ball);
+float xChecker = PowerUpBall.BallCenter.X;
+if (xChecker != 0)
+    {
+    PowerUpBallList.Add(PowerUpBall);
+    }
+for(int i = 0; i < PowerUpBallList.Count; i++)
+{
+    PowerUpBallList[i].BallCenter = UpdateBallPosition(PowerUpBallList[i]);
+    PowerUpBallList[i].DrawBall(PowerUpBallList[i].BallCenter, PowerUpBallList[i].BallColor);
+    if (Collision.BallPaddleCollision(PowerUpBallList[i].BallCenter, Paddle))
+        {
+            TurnOnBluePowerUp();
+            Remove = true;
+        }
+        
+
+    if (!CheckBallFall(PowerUpBallList[i]))
+        {
+            Remove = true;
+        }
+
+    if (Remove)
+        {
+            PowerUpBallList.Remove(PowerUpBallList[i]);
+        }
+    
+}
+}
+
+public void BluePowerUpRunner()
+{
+    PowerUpframes += 1;
+    Console.WriteLine(PowerUpframes);
+    if (PowerUpframes != 600)
+    {
+        PowerUpSKYBLUE = true;
+    }
+    else if (PowerUpframes == 600)
+    {
+        PowerUpSKYBLUE = false;
+        BlueOn = false;
+        PowerUpframes = 0;
+    }
+}
+
+public void TurnOnBluePowerUp()
+{
+    BlueOn = true;
+
+}
+
+public void DictionaryLoader(int Level)
+{
+    if (Level == 1)
+    {
+        BlockDictionary = BlockList.CreateSmileyDictionary();
+        BlockDictionary = BlockList.PowerUpGenerators(BlockDictionary);
+    }
+    else if (Level == 2)
+    {
+        BlockDictionary = BlockList.CreateBorderDictionary();
+        BlockDictionary = BlockList.PowerUpGenerators(BlockDictionary);
+    }
+    else if (Level == 3)
+    {
+        BlockDictionary = BlockList.CreateFullCubeDictionary();
+        BlockDictionary = BlockList.PowerUpGenerators(BlockDictionary);
+    }
+}
+
+public void DevTools()
+{
+if (IsKeyDown(KeyboardKey.KEY_DELETE))
+{
+    for (int i = 0; i < BlockDictionary.Count(); i++)
+    {
+    BlockDictionary[i].Clear();
+    }
+}
+}
+
+public bool NextLevelChecker()
+{
+    int LinesCleared = 0;
+    bool Cleared = false;
+    for (int i = 0; i < BlockDictionary.Count(); i++)
+    {
+        if(BlockDictionary[i].Count == 0)
+        {   
+            LinesCleared += 1;
+            if (LinesCleared == 8)
+            {
+            Cleared = true;
+            }
+        }
+    }
+    return Cleared;
 }
 public void DrawBlocks()
 {
@@ -43,8 +157,56 @@ public void DrawBlocks()
     }
     }
 }
-public void CollisionBallBlock(Vector2 BallObject)
+
+public void RemoveFarBlocks()
 {
+    for (int i = 0; i < BlockDictionary.Count(); i++)
+    {
+    for (int n = 0; n < BlockDictionary[i].Count(); n++)
+    {
+        if (BlockDictionary[i][n].Block.x > 1500)
+        {
+        BlockDictionary[i].Remove(BlockDictionary[i][n]);
+        }
+    }
+    }
+}
+
+public void PointUpdater(Vector2 BallObject, Rectangle PaddleObject)
+{
+    if (Collision.BallPaddleCollision(BallObject, PaddleObject) && Ball.Launch == true && GoingUp == false )
+    {
+        Score.ScorePoints = Score.ScoreSubtract(1, Score.ScorePoints);
+    }  
+    if (BallObject.Y >910 )
+    {
+        Score.ScorePoints = Score.ScoreSubtract(2, Score.ScorePoints);
+    }
+    for (int i = 0; i < BlockDictionary.Count(); i++)
+    {
+    for (int n = 0; n < BlockDictionary[i].Count(); n++)
+    {
+    if (Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block))
+    {
+        if (!BlockDictionary[i][n].Color.Equals(GRAY))
+        {
+        Score.ScorePoints = Score.ScoreAdd(1, Score.ScorePoints);
+        }
+    }
+    }
+    }
+
+}
+public DifferentBalls CollisionBallBlock(Vector2 BallObject)
+{
+float XValue = 0;
+float XFloat = (float)XValue;
+float YValue = 0;
+float YFloat  = (float)YValue;
+Color ColorValue = BLACK;
+
+
+
 bool BlockCollision = false;
 for (int i = 0; i < BlockDictionary.Count(); i++)
     {
@@ -52,9 +214,9 @@ for (int i = 0; i < BlockDictionary.Count(); i++)
     {
 
         BlockCollision = Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block);
-        if (BlockCollision == true)
+        if (BlockCollision == true) 
         {
-        if (BallObject.X <= BlockDictionary[i][n].Block.x + 50 && BallObject.X >= BlockDictionary[i][n].Block.x)
+        if (BallObject.X <= BlockDictionary[i][n].Block.x + 50 && BallObject.X >= BlockDictionary[i][n].Block.x && PowerUpSKYBLUE == false)
         {
             if (BallObject.Y > BlockDictionary[i][n].Block.y)
             {
@@ -65,9 +227,8 @@ for (int i = 0; i < BlockDictionary.Count(); i++)
                 GoingUp = true;
             }
         }
-        if (BallObject.Y <= BlockDictionary[i][n].Block.y + 20 && BallObject.Y >= BlockDictionary[i][n].Block.y)
+        if (BallObject.Y <= BlockDictionary[i][n].Block.y + 20 && BallObject.Y >= BlockDictionary[i][n].Block.y && PowerUpSKYBLUE == false)
         {
-            Console.WriteLine("true");
             if (BallObject.X < BlockDictionary[i][n].Block.x + 50)
             {
                 SideWaysDirection = 2;
@@ -77,11 +238,64 @@ for (int i = 0; i < BlockDictionary.Count(); i++)
                 SideWaysDirection = 1;
             }
         }
-        BlockDictionary[i].Remove(BlockDictionary[i][n]);
+        if (BallObject.X <= BlockDictionary[i][n].Block.x + 50 && BallObject.X >= BlockDictionary[i][n].Block.x && PowerUpSKYBLUE == true && BlockDictionary[i][n].Color.Equals(GRAY))
+        {
+            if (BallObject.Y > BlockDictionary[i][n].Block.y)
+            {
+                GoingUp = false;
+            }
+            else if (BallObject.Y < BlockDictionary[i][n].Block.y + 20)
+            {
+                GoingUp = true;
+            }
+        }
+        if (BallObject.Y <= BlockDictionary[i][n].Block.y + 20 && BallObject.Y >= BlockDictionary[i][n].Block.y && PowerUpSKYBLUE == true && BlockDictionary[i][n].Color.Equals(GRAY))
+        {
+            if (BallObject.X < BlockDictionary[i][n].Block.x + 50)
+            {
+                SideWaysDirection = 2;
+            }
+            else if (BallObject.X > BlockDictionary[i][n].Block.x)
+            {
+                SideWaysDirection = 1;
+            }
+        }
+        if (!BlockDictionary[i][n].Color.Equals(GRAY))
+        {
+            if (BlockDictionary[i][n].Color.Equals(SKYBLUE))
+                {
+                Score.ScorePoints = Score.ScoreAdd(2, Score.ScorePoints);
+                XFloat = (float)BlockDictionary[i][n].Block.x;
+                YFloat = (float)BlockDictionary[i][n].Block.y;;
+                ColorValue = BlockDictionary[i][n].Color;
+                BlockDictionary[i].Remove(BlockDictionary[i][n]);
+                }
+            else if (BlockDictionary[i][n].Color.Equals(RED))
+                {
+                Score.ScorePoints = Score.ScoreAdd(2, Score.ScorePoints);
+                XValue = BlockDictionary[i][n].Block.x;
+                XFloat = (float)XValue;
+                YValue = BlockDictionary[i][n].Block.y;
+                YFloat = (float)YValue;
+                ColorValue = BlockDictionary[i][n].Color;
+                BlockDictionary[i].Remove(BlockDictionary[i][n]);
+                }
+            
+            else 
+                {
+                Score.ScorePoints = Score.ScoreAdd(1, Score.ScorePoints);
+                BlockDictionary[i].Remove(BlockDictionary[i][n]);
+                }   
+                  
+        }
+        
         }
         
     }
     }
+
+DifferentBalls PowerUpBall = new DifferentBalls(XFloat, YFloat, ColorValue);
+return PowerUpBall;
 }   
 
 // Changea the direction of both X and Y direction of ball.
@@ -114,11 +328,11 @@ public void UpdateBallYDirection(Vector2 BallObject, Rectangle PaddleObject)
 //Changes the X Direction of the ball
 public int UpdateBallXDirection(Vector2 BallObject, Rectangle PaddleObject)
 {   
-    if (BallObject.X >= 1100 && SideWaysDirection == 1)
+    if (BallObject.X >= 1090 && SideWaysDirection == 1)
     {
         SideWaysDirection = 2;
     }
-    else if (BallObject.X < 0 && SideWaysDirection == 2 )
+    else if (BallObject.X < 10 && SideWaysDirection == 2 )
     {
         SideWaysDirection = 1;
     }
@@ -158,6 +372,29 @@ public int UpdateBallXDirection(Vector2 BallObject, Rectangle PaddleObject)
 
     return SideWaysDirection;
 }
+
+public Vector2 UpdateBallPosition(DifferentBalls DifferentBalls)
+{
+    DifferentBalls.BallCenter = MoveGeneratedBall(DifferentBalls.BallCenter);
+    return DifferentBalls.BallCenter;
+}
+public bool CheckBallFall(DifferentBalls DifferentBalls)
+{
+    var StillFalling = true;
+    if (DifferentBalls.BallCenter.Y > 910)
+    {
+
+    StillFalling = false;
+    }
+    return StillFalling;
+}
+
+public Vector2 MoveGeneratedBall(Vector2 Ball)
+{
+    Ball.Y += 5;
+    return Ball;
+}
+
 }
 
 

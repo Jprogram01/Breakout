@@ -16,6 +16,6 @@ PaddleSpeed = 14;
 YSpeed = 10;
 XSpeed = 8;
 SideWaysDirection = 0;
-}
+ }
 
 }

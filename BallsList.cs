@@ -1,33 +1,31 @@
-// using Raylib_cs;
-// using System.Numerics;
-// using static Raylib_cs.Raylib;
-// using static Raylib_cs.Color;
-// using static Raylib_cs.PixelFormat;
+using Raylib_cs;
+using System.Numerics;
+using static Raylib_cs.Raylib;
+using static Raylib_cs.Color;
+using static Raylib_cs.PixelFormat;
 
 
-// class BallList
-// {
-// Ball FirstBall = new Ball();
+class DifferentBalls
+{
 
-// Dictionary<int, Tuple<Vector2, bool, int>> Balls = new Dictionary<int, Tuple<Vector2, bool, int >>();
+public Color BallColor;
+public Vector2 BallCenter = new Vector2();
+public DifferentBalls(float X, float Y, Color COLOR)
+{
+    BallCenter.X = X;
+    BallCenter.Y = Y;
+    BallColor = COLOR;
+}
 
 
-// Tuple<Vector2, bool, int> IndividualBall = new Tuple<Vector2, bool, int>(BallCenter, GoingUp, SideWaysDirection);
+public void DrawBall(Vector2 BallCenter, Color COLOR)
+{
+     DrawCircleV(BallCenter, 10, COLOR);
+}
+public void NoDetectionBallPowerUp()
+{
+    
+}
 
-// public void AddFirstBall()
-// {
-//     FirstBall.IndividualBall = (BallCenter, GoingUp, SideWaysDirection)
-//     Balls.Add(BallCenter);
-// }
-// public void AddedGeneratedBallToList(bool BallGenerated, Vector2 CurrentBall)
-// {
-//     if(BallGenerated)
-//     {
-//         Vector2 Ball = new Vector2();
-//         Ball.X = CurrentBall.X; 
-//         Ball.Y = CurrentBall.Y;
-//         Balls.Add(Ball);
-//     }
 
-// }
-// }
+}

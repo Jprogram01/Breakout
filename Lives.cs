@@ -11,9 +11,12 @@ BallObjectMovement Ball = new BallObjectMovement();
 public int Lives;
 public bool GameOver;
 
+public int Level;
+
 
 public PlayerLives()
 {   
+    Level = 1;
     Lives = 3;
     GameOver = false;
 }

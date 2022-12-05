@@ -27,37 +27,4 @@ BallCenter.Y = BallOnPaddleY;
 
 
 }
-
-public void AddFirstBall()
-{
-    
-Tuple<Vector2, bool, int> IndividualBall = new Tuple<Vector2, bool, int>(BallCenter, GoingUp, SideWaysDirection);
-
-
-    Balls.Add(0,IndividualBall);
-}
-public void AddedGeneratedBallToList(bool BallGenerated, Vector2 CurrentBall)
-{
-    if(BallGenerated)
-    {
-        int NumberOfBalls = Balls.Count; 
-        Vector2 Ball = new Vector2();
-        Ball.X = CurrentBall.X; 
-        Ball.Y = CurrentBall.Y;
-        Tuple<Vector2, bool, int> BallWithVariables = new Tuple<Vector2, bool, int>(BallCenter, GoingUp, SideWaysDirection);
-        Balls.Add(NumberOfBalls, BallWithVariables);
-    }
-
-}
-
-
-
-
-
-
-
-
-
-
-
 }
