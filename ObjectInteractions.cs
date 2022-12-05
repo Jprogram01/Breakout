@@ -13,20 +13,31 @@ class ObjectMovement: MovementDirection
     
     public BlockList BlockList = new BlockList();
     public Score Score = new Score();
+    public RedPowerUpBallList RedPowerUp = new RedPowerUpBallList();
 
     public List<DifferentBalls> PowerUpBallList = new List<DifferentBalls>();
+
     public int Runner = 0;
     public int PowerUpframes = 0;
+    public int RedPowerUpframes = 0;
 
     public bool BlueOn = false;
     public bool PowerUpSKYBLUE = false;
+
+    public bool RedOn = false;
+    public bool PowerUpRed = false;
+
+    public int RADIUS = 10;
+
+
     
     public Dictionary<int, List<Blocks>> BlockDictionary = new Dictionary<int, List<Blocks>>();
 
 public void ObjectsMoving()
 {
     UpdateBallXandYDirection(Ball.BallCenter, Paddle.MovingPaddle);
-    Ball.BallCenter = Ball.BallMovement(Ball.BallCenter, Paddle.MovingPaddle, GoingUp, SideWaysDirection);
+    Console.WriteLine(RADIUS);
+    Ball.BallCenter = Ball.BallMovement(Ball.BallCenter, Paddle.MovingPaddle, GoingUp, SideWaysDirection, RADIUS);
     Paddle.PaddleMovement();
     BlockFunctions(Ball.BallCenter, Paddle.MovingPaddle);
     PointUpdater(Ball.BallCenter, Paddle.MovingPaddle);
@@ -47,6 +58,14 @@ if (BlueOn)
 {
     BluePowerUpRunner();
 }
+if (RedOn)
+{
+    RedPowerUpRunner();
+}
+Console.WriteLine(RedPowerUpframes);
+Console.WriteLine(RedOn);
+Console.WriteLine(PowerUpframes);
+Console.WriteLine(BlueOn);
 var Remove = false;
 var PowerUpBall = CollisionBallBlock(Ball);
 float xChecker = PowerUpBall.BallCenter.X;
@@ -58,12 +77,17 @@ for(int i = 0; i < PowerUpBallList.Count; i++)
 {
     PowerUpBallList[i].BallCenter = UpdateBallPosition(PowerUpBallList[i]);
     PowerUpBallList[i].DrawBall(PowerUpBallList[i].BallCenter, PowerUpBallList[i].BallColor);
-    if (Collision.BallPaddleCollision(PowerUpBallList[i].BallCenter, Paddle))
+    if (Collision.BallPaddleCollision(PowerUpBallList[i].BallCenter, Paddle, RADIUS) && PowerUpBallList[i].BallColor.Equals(SKYBLUE))
         {
             TurnOnBluePowerUp();
             Remove = true;
         }
         
+    if (Collision.BallPaddleCollision(PowerUpBallList[i].BallCenter, Paddle, RADIUS) && PowerUpBallList[i].BallColor.Equals(RED))
+        {
+            TurnOnRedPowerUp();
+            Remove = true;
+        }
 
     if (!CheckBallFall(PowerUpBallList[i]))
         {
@@ -81,7 +105,6 @@ for(int i = 0; i < PowerUpBallList.Count; i++)
 public void BluePowerUpRunner()
 {
     PowerUpframes += 1;
-    Console.WriteLine(PowerUpframes);
     if (PowerUpframes != 600)
     {
         PowerUpSKYBLUE = true;
@@ -97,7 +120,33 @@ public void BluePowerUpRunner()
 public void TurnOnBluePowerUp()
 {
     BlueOn = true;
+    PowerUpframes = 0;
 
+}
+
+public void RedPowerUpRunner()
+{
+    RedPowerUpframes += 1;
+    if (RedPowerUpframes != 600)
+    {
+        PowerUpRed = true;
+    }
+    else if (RedPowerUpframes == 600)
+    {
+        RedPowerUpframes = 0;
+        RADIUS = 10;
+        RedOn = false;
+        PowerUpRed = false;
+    }
+    if(PowerUpRed)
+    {
+        RADIUS = 30;
+    }
+}
+
+public void TurnOnRedPowerUp()
+{
+    RedOn = true;
 }
 
 public void DictionaryLoader(int Level)
@@ -174,7 +223,7 @@ public void RemoveFarBlocks()
 
 public void PointUpdater(Vector2 BallObject, Rectangle PaddleObject)
 {
-    if (Collision.BallPaddleCollision(BallObject, PaddleObject) && Ball.Launch == true && GoingUp == false )
+    if (Collision.BallPaddleCollision(BallObject, PaddleObject, RADIUS) && Ball.Launch == true && GoingUp == false )
     {
         Score.ScorePoints = Score.ScoreSubtract(1, Score.ScorePoints);
     }  
@@ -186,7 +235,7 @@ public void PointUpdater(Vector2 BallObject, Rectangle PaddleObject)
     {
     for (int n = 0; n < BlockDictionary[i].Count(); n++)
     {
-    if (Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block))
+    if (Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block, RADIUS))
     {
         if (!BlockDictionary[i][n].Color.Equals(GRAY))
         {
@@ -213,7 +262,7 @@ for (int i = 0; i < BlockDictionary.Count(); i++)
     for (int n = 0; n < BlockDictionary[i].Count(); n++)
     {
 
-        BlockCollision = Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block);
+        BlockCollision = Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block, RADIUS);
         if (BlockCollision == true) 
         {
         if (BallObject.X <= BlockDictionary[i][n].Block.x + 50 && BallObject.X >= BlockDictionary[i][n].Block.x && PowerUpSKYBLUE == false)
@@ -320,7 +369,7 @@ public void UpdateBallYDirection(Vector2 BallObject, Rectangle PaddleObject)
     }
     if (GoingUp == false)
     {
-        GoingUp = Collision.BallPaddleCollision(BallObject, PaddleObject);
+        GoingUp = Collision.BallPaddleCollision(BallObject, PaddleObject, RADIUS);
     }
  
 }
@@ -336,7 +385,7 @@ public int UpdateBallXDirection(Vector2 BallObject, Rectangle PaddleObject)
     {
         SideWaysDirection = 1;
     }
-    if (Collision.BallPaddleCollision(BallObject, PaddleObject))
+    if (Collision.BallPaddleCollision(BallObject, PaddleObject, RADIUS))
     {
         var SideWaysChecker = Paddle.PaddleDirectionChecker();
         if (SideWaysChecker == 1)

@@ -16,10 +16,10 @@ public Collision()
 {
     CollisionBool = false;
 }
-    public bool BallPaddleCollision(Vector2 FirstObject, Rectangle SecondObject)
+    public bool BallPaddleCollision(Vector2 FirstObject, Rectangle SecondObject, int RADIUS)
     {
     
-    if (CheckCollisionCircleRec(FirstObject, 10, SecondObject))
+    if (CheckCollisionCircleRec(FirstObject, RADIUS, SecondObject))
     {
         CollisionBool = true;
        
@@ -30,10 +30,10 @@ public Collision()
     }
     return CollisionBool;
     }
-    public bool BallBlockCollision(Vector2 Ball, Rectangle Block)
+    public bool BallBlockCollision(Vector2 Ball, Rectangle Block, int RADIUS)
     {
     bool Collision = false;
-    if (CheckCollisionCircleRec(Ball, 10, Block))
+    if (CheckCollisionCircleRec(Ball, RADIUS, Block))
     {
     Collision = true;
     }
