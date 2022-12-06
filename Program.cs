@@ -43,6 +43,10 @@ class Program
 
             while (!Raylib.WindowShouldClose())
             {
+            PlayerLives.GameOver = GameOver;
+            Level1.Score.ScorePoints= CurrentScore;
+            Level2.Score.ScorePoints= CurrentScore;
+            Level3.Score.ScorePoints= CurrentScore;
                 if (GameOver == false)
                 {
                     if (PlayerLives.Level == 1)
@@ -52,7 +56,10 @@ class Program
                             Level1.ObjectsMoving();
                             CurrentScore = Level1.Score.ScorePoints;
                             TopDisplay.DisplayAll(PlayerLives.Lives, CurrentScore);
+                            Console.WriteLine(GameOver);
+                            Console.WriteLine(PlayerLives.Lives);
                             GameOver = PlayerLives.PlayerLivesDisplay(Level1.Ball.BallCenter);
+                            Console.WriteLine(GameOver);
                             if (Level1.NextLevelChecker())
                                 {
                                     Level2.Score.ScorePoints =Level1.Score.ScorePoints;
@@ -71,15 +78,13 @@ class Program
                         Raylib.EndDrawing();
                         frames += 1;
                         }
-
-
-
                         Raylib.BeginDrawing();
                         Raylib.ClearBackground(Color.BLACK);
                         Level2.ObjectsMoving();
                         CurrentScore = Level2.Score.ScorePoints;
                         TopDisplay.DisplayAll(PlayerLives.Lives, Level2.Score.ScorePoints);
                         GameOver = PlayerLives.PlayerLivesDisplay(Level2.Ball.BallCenter);
+                        Console.WriteLine(Level2.NextLevelChecker());
                         if (Level2.NextLevelChecker())
                             {
                                 PlayerLives.Level += 1;
@@ -122,6 +127,19 @@ class Program
                         Raylib.ClearBackground(Color.BLACK);
                         DrawText("You WON!!!", 300, 450, 100, Color.GOLD); 
                         DrawText($"Your Score:{CurrentScore}", 200, 600, 100, Color.PINK);
+                        bool WinRestart = restart.playAgain();
+                        if (WinRestart == false){
+                            GameOver = false;
+                            PlayerLives.Lives = 3;
+                            PlayerLives.Level = 1;
+                            CurrentScore = 0;
+                            Level1.BlockDictionary.Clear();
+                            Level2.BlockDictionary.Clear();
+                            Level3.BlockDictionary.Clear();
+                            Level1.DictionaryLoader(1);
+                            Level2.DictionaryLoader(2);
+                            Level3.DictionaryLoader(3);
+                        }
                         Raylib.EndDrawing();
                         }
 
@@ -134,7 +152,19 @@ class Program
                 // trying to restart, but I guess i'm not understanding the language
                 bool pg = restart.playAgain();
                 if (pg == false){
+                    if (GameOver)
+                    {
                     GameOver = false;
+                    PlayerLives.Lives = 3;
+                    PlayerLives.Level = 1;
+                    CurrentScore = 0;
+                    Level1.BlockDictionary.Clear();
+                    Level2.BlockDictionary.Clear();
+                    Level3.BlockDictionary.Clear();
+                    Level1.DictionaryLoader(1);
+                    Level2.DictionaryLoader(2);
+                    Level3.DictionaryLoader(3);
+                    }
                 }
                 Raylib.EndDrawing();
                 

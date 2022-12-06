@@ -36,7 +36,6 @@ class ObjectMovement: MovementDirection
 public void ObjectsMoving()
 {
     UpdateBallXandYDirection(Ball.BallCenter, Paddle.MovingPaddle);
-    Console.WriteLine(RADIUS);
     Ball.BallCenter = Ball.BallMovement(Ball.BallCenter, Paddle.MovingPaddle, GoingUp, SideWaysDirection, RADIUS);
     Paddle.PaddleMovement();
     BlockFunctions(Ball.BallCenter, Paddle.MovingPaddle);
@@ -62,10 +61,6 @@ if (RedOn)
 {
     RedPowerUpRunner();
 }
-Console.WriteLine(RedPowerUpframes);
-Console.WriteLine(RedOn);
-Console.WriteLine(PowerUpframes);
-Console.WriteLine(BlueOn);
 var Remove = false;
 var PowerUpBall = CollisionBallBlock(Ball);
 float xChecker = PowerUpBall.BallCenter.X;

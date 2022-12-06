@@ -11,7 +11,7 @@ public bool NextLevelChecker()
     bool Cleared = false;
     for (int i = 0; i < BlockDictionary.Count(); i++)
     {
-        if(BlockDictionary[i].Count == 4)
+        if(BlockDictionary[i].Count == 4 || BlockDictionary[i].Count == 0 )
         {   
             LinesCleared += 1;
             Console.WriteLine(LinesCleared);
