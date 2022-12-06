@@ -25,6 +25,7 @@ class Program
             Level2 Level2 = new Level2();
             Level3 Level3 = new Level3();
             Score Score = new Score();
+            Restart restart = new Restart();
             var ScreenHeight = 900;
             var ScreenWidth = 1110;
             var frames = 0;
@@ -114,31 +115,36 @@ class Program
                         }
 
 
-
-
-
-
                     }
                     if (PlayerLives.Level == 4)
                         {
                         Raylib.BeginDrawing();
                         Raylib.ClearBackground(Color.BLACK);
-
                         DrawText("You WON!!!", 300, 450, 100, Color.GOLD); 
                         DrawText($"Your Score:{CurrentScore}", 200, 600, 100, Color.PINK);
                         Raylib.EndDrawing();
                         }
+
                 else if (GameOver == true)
                 {
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.BLACK);
                 DrawText("You LOST!!!", 300, 450, 100, Color.RED);
                 DrawText($"Your Score:{CurrentScore}", 200, 600, 100, Color.PINK);
+                // trying to restart, but I guess i'm not understanding the language
+                bool pg = restart.playAgain();
+                if (pg == false){
+                    GameOver = false;
+                }
                 Raylib.EndDrawing();
+                
+
                 }
             }
+            
             Raylib.CloseAudioDevice();
-            Raylib.CloseWindow();
+            Raylib.CloseWindow(); 
+            
         }
     }
 }
