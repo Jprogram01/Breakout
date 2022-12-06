@@ -12,7 +12,6 @@ class Ball: MovementDirection
 
 Paddle Paddle = new Paddle();
 
-Dictionary<int, Tuple<Vector2, bool, int>> Balls = new Dictionary<int, Tuple<Vector2, bool, int >>();
 public Vector2 BallCenter = new Vector2();
 
 public float BallOnPaddleX;

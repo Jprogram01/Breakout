@@ -19,7 +19,7 @@ Launch = false;
 }
 
 // Loads in all the different methods and covers ball status, positon, movement
-public Vector2 BallMovement(Vector2 BallObject, Rectangle PaddleObject, bool GoingUp, int SideWaysDirection)
+public Vector2 BallMovement(Vector2 BallObject, Rectangle PaddleObject, bool GoingUp, int SideWaysDirection, int RADIUS)
 {
     var BallOutOfBounds = false;
     BallOutOfBounds = CheckOutOfBounds(BallObject);
@@ -36,18 +36,18 @@ public Vector2 BallMovement(Vector2 BallObject, Rectangle PaddleObject, bool Goi
     }
     else
     {
-        BallObject = BallFlying(BallObject, PaddleObject, GoingUp, SideWaysDirection);
+        BallObject = BallFlying(BallObject, GoingUp, SideWaysDirection);
     }
 
     
     
-    DrawCircleV(BallObject, 10, WHITE);
+    DrawCircleV(BallObject, RADIUS, WHITE);
     return BallObject;
 }
 
 
 // Handles when the ball is flying
-public Vector2 BallFlying(Vector2 BallObject, Rectangle PaddleObject, bool GoingUp, int SideWaysDirection)
+public Vector2 BallFlying(Vector2 BallObject,bool GoingUp, int SideWaysDirection)
 {
     BallObject = MovingBall(GoingUp, SideWaysDirection, BallObject);
 
