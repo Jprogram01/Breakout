@@ -49,17 +49,16 @@ class Program
             Level3.Score.ScorePoints= CurrentScore;
                 if (GameOver == false)
                 {
+                    //Runs level 1
                     if (PlayerLives.Level == 1)
                             {
                             Raylib.BeginDrawing();
                             Raylib.ClearBackground(Color.BLACK);
-                            Level1.ObjectsMoving();
+                            Level1.ObjectsInteracting();
                             CurrentScore = Level1.Score.ScorePoints;
                             TopDisplay.DisplayAll(PlayerLives.Lives, CurrentScore);
-                            Console.WriteLine(GameOver);
-                            Console.WriteLine(PlayerLives.Lives);
                             GameOver = PlayerLives.PlayerLivesDisplay(Level1.Ball.BallCenter);
-                            Console.WriteLine(GameOver);
+                            //Sets the score and lives for the next level
                             if (Level1.NextLevelChecker())
                                 {
                                     Level2.Score.ScorePoints =Level1.Score.ScorePoints;
@@ -68,6 +67,7 @@ class Program
                                 }
                             Raylib.EndDrawing();
                             }
+                            //Displays a brief intermission page between levels
                     if (PlayerLives.Level == 2)
                         {
                         while (frames != 300)
@@ -78,13 +78,14 @@ class Program
                         Raylib.EndDrawing();
                         frames += 1;
                         }
+                        //Runs level 2
                         Raylib.BeginDrawing();
                         Raylib.ClearBackground(Color.BLACK);
-                        Level2.ObjectsMoving();
+                        Level2.ObjectsInteracting();
                         CurrentScore = Level2.Score.ScorePoints;
                         TopDisplay.DisplayAll(PlayerLives.Lives, Level2.Score.ScorePoints);
                         GameOver = PlayerLives.PlayerLivesDisplay(Level2.Ball.BallCenter);
-                        Console.WriteLine(Level2.NextLevelChecker());
+                        //Sets the score and lives for the next level
                         if (Level2.NextLevelChecker())
                             {
                                 PlayerLives.Level += 1;
@@ -96,7 +97,7 @@ class Program
                         }
                     if (PlayerLives.Level == 3)
                         {
-                        
+                        //Brief intermission page between levels
                         while (frames != 300)
                         {
                         Raylib.BeginDrawing();
@@ -105,12 +106,14 @@ class Program
                         Raylib.EndDrawing();
                         frames += 1;
                         }
+                        //Runs level 3
                         Raylib.BeginDrawing();
                         Raylib.ClearBackground(Color.BLACK);
-                        Level3.ObjectsMoving();
+                        Level3.ObjectsInteracting();
                         CurrentScore = Level3.Score.ScorePoints;
                         TopDisplay.DisplayAll(PlayerLives.Lives, Level3.Score.ScorePoints);
                         GameOver = PlayerLives.PlayerLivesDisplay(Level3.Ball.BallCenter);
+                        //Updates score
                         if (Level3.NextLevelChecker())
                             {
                                 PlayerLives.Level += 1;
@@ -123,11 +126,13 @@ class Program
                     }
                     if (PlayerLives.Level == 4)
                         {
+                        //Runs win page
                         Raylib.BeginDrawing();
                         Raylib.ClearBackground(Color.BLACK);
                         DrawText("You WON!!!", 300, 450, 100, Color.GOLD); 
                         DrawText($"Your Score:{CurrentScore}", 200, 600, 100, Color.PINK);
                         bool WinRestart = restart.playAgain();
+                        //Resets the game when the restart button is pressed.
                         if (WinRestart == false){
                             GameOver = false;
                             PlayerLives.Lives = 3;
@@ -149,7 +154,7 @@ class Program
                 Raylib.ClearBackground(Color.BLACK);
                 DrawText("You LOST!!!", 300, 450, 100, Color.RED);
                 DrawText($"Your Score:{CurrentScore}", 200, 600, 100, Color.PINK);
-                // trying to restart, but I guess i'm not understanding the language
+                // Restarts the level if the restart button pressed.
                 bool pg = restart.playAgain();
                 if (pg == false){
                     if (GameOver)

@@ -1,4 +1,4 @@
-class Level3: ObjectMovement
+class Level3: ObjectInteraction
 {
 
 public Level3()

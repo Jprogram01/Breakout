@@ -4,9 +4,11 @@ using static Raylib_cs.Raylib;
 using static Raylib_cs.Color;
 using static Raylib_cs.PixelFormat;
 
-
-class ObjectMovement: MovementDirection
+//Class for all the objectinteractions in the game
+//Handles a lot of the logic
+class ObjectInteraction: MovementDirection
 {
+    //Calls all the classes needed for objects to interact or logic to run
     public BallObjectMovement Ball = new BallObjectMovement();
     public PaddleObjectMovement  Paddle = new PaddleObjectMovement();
     public Collision Collision = new Collision();
@@ -16,6 +18,8 @@ class ObjectMovement: MovementDirection
     public RedPowerUpBallList RedPowerUp = new RedPowerUpBallList();
 
     public List<DifferentBalls> PowerUpBallList = new List<DifferentBalls>();
+
+    public Dictionary<int, List<Blocks>> BlockDictionary = new Dictionary<int, List<Blocks>>();
 
     public int Runner = 0;
     public int PowerUpframes = 0;
@@ -29,11 +33,8 @@ class ObjectMovement: MovementDirection
 
     public int RADIUS = 10;
 
-
-    
-    public Dictionary<int, List<Blocks>> BlockDictionary = new Dictionary<int, List<Blocks>>();
-
-public void ObjectsMoving()
+//Runs all the different for objects to move and interact
+public void ObjectsInteracting()
 {
     UpdateBallXandYDirection(Ball.BallCenter, Paddle.MovingPaddle);
     Ball.BallCenter = Ball.BallMovement(Ball.BallCenter, Paddle.MovingPaddle, GoingUp, SideWaysDirection, RADIUS);
@@ -43,7 +44,7 @@ public void ObjectsMoving()
     DevTools();
 }
 
-
+//Runs all the block and powerup functions
 public void BlockFunctions(Vector2 Ball, Rectangle Paddle)
 {
     RemoveFarBlocks();
@@ -51,6 +52,7 @@ public void BlockFunctions(Vector2 Ball, Rectangle Paddle)
     PowerUpRunner(Ball, Paddle);
 }
 
+//Runs the powers up functions
 public void PowerUpRunner(Vector2 Ball, Rectangle Paddle)
 {
 if (BlueOn)
@@ -96,7 +98,7 @@ for(int i = 0; i < PowerUpBallList.Count; i++)
     
 }
 }
-
+//runs the blue power up
 public void BluePowerUpRunner()
 {
     PowerUpframes += 1;
@@ -112,6 +114,7 @@ public void BluePowerUpRunner()
     }
 }
 
+//Turns on the blue power up
 public void TurnOnBluePowerUp()
 {
     BlueOn = true;
@@ -119,6 +122,7 @@ public void TurnOnBluePowerUp()
 
 }
 
+//runs the red power up
 public void RedPowerUpRunner()
 {
     RedPowerUpframes += 1;
@@ -138,12 +142,12 @@ public void RedPowerUpRunner()
         RADIUS = 30;
     }
 }
-
+//turns on the red power up
 public void TurnOnRedPowerUp()
 {
     RedOn = true;
 }
-
+//Loads the block dictionary according to which level it is.
 public void DictionaryLoader(int Level)
 {
     if (Level == 1)
@@ -162,7 +166,7 @@ public void DictionaryLoader(int Level)
         BlockDictionary = BlockList.PowerUpGenerators(BlockDictionary);
     }
 }
-
+//Dev tool to delete the blocks to progress the levels
 public void DevTools()
 {
 if (IsKeyDown(KeyboardKey.KEY_DELETE))
@@ -173,7 +177,7 @@ if (IsKeyDown(KeyboardKey.KEY_DELETE))
     }
 }
 }
-
+//Checks to see if the blocks are clear to progress to the next level
 public bool NextLevelChecker()
 {
     int LinesCleared = 0;
@@ -191,6 +195,7 @@ public bool NextLevelChecker()
     }
     return Cleared;
 }
+//Draw the blocks for the current level
 public void DrawBlocks()
 {
     for (int i = 0; i < BlockDictionary.Count(); i++)
@@ -201,7 +206,7 @@ public void DrawBlocks()
     }
     }
 }
-
+//For the different formations it just sends the non-needed blocks far away, this function then removes them
 public void RemoveFarBlocks()
 {
     for (int i = 0; i < BlockDictionary.Count(); i++)
@@ -215,7 +220,7 @@ public void RemoveFarBlocks()
     }
     }
 }
-
+//Updates points for each collision
 public void PointUpdater(Vector2 BallObject, Rectangle PaddleObject)
 {
     if (Collision.BallPaddleCollision(BallObject, PaddleObject, RADIUS) && Ball.Launch == true && GoingUp == false )
@@ -241,23 +246,10 @@ public void PointUpdater(Vector2 BallObject, Rectangle PaddleObject)
     }
 
 }
-public DifferentBalls CollisionBallBlock(Vector2 BallObject)
+//Updates the ball direction when collision happens
+public void BallDirectionChangerCollision(bool BlockCollision, Vector2 BallObject, int i, int n)
 {
-float XValue = 0;
-float XFloat = (float)XValue;
-float YValue = 0;
-float YFloat  = (float)YValue;
-Color ColorValue = BLACK;
-
-
-
-bool BlockCollision = false;
-for (int i = 0; i < BlockDictionary.Count(); i++)
-    {
-    for (int n = 0; n < BlockDictionary[i].Count(); n++)
-    {
-
-        BlockCollision = Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block, RADIUS);
+BlockCollision = Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block, RADIUS);
         if (BlockCollision == true) 
         {
         if (BallObject.X <= BlockDictionary[i][n].Block.x + 50 && BallObject.X >= BlockDictionary[i][n].Block.x && PowerUpSKYBLUE == false)
@@ -281,8 +273,13 @@ for (int i = 0; i < BlockDictionary.Count(); i++)
             {
                 SideWaysDirection = 1;
             }
+        }   
         }
-        if (BallObject.X <= BlockDictionary[i][n].Block.x + 50 && BallObject.X >= BlockDictionary[i][n].Block.x && PowerUpSKYBLUE == true && BlockDictionary[i][n].Color.Equals(GRAY))
+}
+//Updates the ball direction if bluepower up is on and if it collides with a gray block
+public void  BallDirectionChangerCollisionBluePower(bool BlockCollision, Vector2 BallObject, int i, int n)
+{
+    if (BallObject.X <= BlockDictionary[i][n].Block.x + 50 && BallObject.X >= BlockDictionary[i][n].Block.x && PowerUpSKYBLUE == true && BlockDictionary[i][n].Color.Equals(GRAY))
         {
             if (BallObject.Y > BlockDictionary[i][n].Block.y)
             {
@@ -304,6 +301,74 @@ for (int i = 0; i < BlockDictionary.Count(); i++)
                 SideWaysDirection = 1;
             }
         }
+}
+// public DifferentBalls RemoveBlockReturnBall(Vector2 BallObject, int i, int n)
+// {
+//     float XFloat = 0;
+//     float YFloat = 0;
+//     float XValue = 0;
+//     float YValue = 0;
+//     Color ColorValue = WHITE;
+//     bool BlockCollision = false;
+
+//     if (!BlockDictionary[i][n].Color.Equals(GRAY))
+//         {
+//         BlockCollision = Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block, RADIUS);
+//         BallDirectionChangerCollision(BlockCollision, BallObject, i, n);
+//         BallDirectionChangerCollisionBluePower(BlockCollision, BallObject, i, n);
+//             if (BlockDictionary[i][n].Color.Equals(SKYBLUE))
+//                 {
+//                 Score.ScorePoints = Score.ScoreAdd(2, Score.ScorePoints);
+//                 XFloat = (float)BlockDictionary[i][n].Block.x;
+//                 YFloat = (float)BlockDictionary[i][n].Block.y;;
+//                 ColorValue = BlockDictionary[i][n].Color;
+//                 BlockDictionary[i].Remove(BlockDictionary[i][n]);
+//                 }
+//             else if (BlockDictionary[i][n].Color.Equals(RED))
+//                 {
+//                 Score.ScorePoints = Score.ScoreAdd(2, Score.ScorePoints);
+//                 XValue = BlockDictionary[i][n].Block.x;
+//                 XFloat = (float)XValue;
+//                 YValue = BlockDictionary[i][n].Block.y;
+//                 YFloat = (float)YValue;
+//                 ColorValue = BlockDictionary[i][n].Color;
+//                 BlockDictionary[i].Remove(BlockDictionary[i][n]);
+//                 }
+            
+//             else 
+//                 {
+//                 Score.ScorePoints = Score.ScoreAdd(1, Score.ScorePoints);
+//                 BlockDictionary[i].Remove(BlockDictionary[i][n]);
+//                 }   
+                  
+//         }
+//     DifferentBalls PowerUpBall = new DifferentBalls(XFloat, YFloat, ColorValue);
+//     return PowerUpBall;
+// }
+//Detects the collision between the blocks and the ball, returns the x and y location of the block as a ball object so if
+//it is a power up block is can generate a power up block
+public DifferentBalls CollisionBallBlock(Vector2 BallObject)
+{
+float XValue = 0;
+float XFloat = (float)XValue;
+float YValue = 0;
+float YFloat  = (float)YValue;
+Color ColorValue = BLACK;
+
+
+
+bool BlockCollision = false;
+for (int i = 0; i < BlockDictionary.Count(); i++)
+    {
+    for (int n = 0; n < BlockDictionary[i].Count(); n++)
+    {
+
+        BlockCollision = Collision.BallBlockCollision(BallObject, BlockDictionary[i][n].Block, RADIUS);
+        BallDirectionChangerCollision(BlockCollision, BallObject, i, n);
+        BallDirectionChangerCollisionBluePower(BlockCollision, BallObject, i, n);
+        Console.WriteLine(BlockCollision);
+    if (BlockCollision)
+    {
         if (!BlockDictionary[i][n].Color.Equals(GRAY))
         {
             if (BlockDictionary[i][n].Color.Equals(SKYBLUE))
@@ -317,10 +382,8 @@ for (int i = 0; i < BlockDictionary.Count(); i++)
             else if (BlockDictionary[i][n].Color.Equals(RED))
                 {
                 Score.ScorePoints = Score.ScoreAdd(2, Score.ScorePoints);
-                XValue = BlockDictionary[i][n].Block.x;
-                XFloat = (float)XValue;
-                YValue = BlockDictionary[i][n].Block.y;
-                YFloat = (float)YValue;
+                XFloat = (float)BlockDictionary[i][n].Block.x;
+                YFloat = (float)BlockDictionary[i][n].Block.y;
                 ColorValue = BlockDictionary[i][n].Color;
                 BlockDictionary[i].Remove(BlockDictionary[i][n]);
                 }
@@ -334,9 +397,9 @@ for (int i = 0; i < BlockDictionary.Count(); i++)
         }
         
         }
-        
     }
     }
+
 
 DifferentBalls PowerUpBall = new DifferentBalls(XFloat, YFloat, ColorValue);
 return PowerUpBall;
@@ -416,12 +479,13 @@ public int UpdateBallXDirection(Vector2 BallObject, Rectangle PaddleObject)
 
     return SideWaysDirection;
 }
-
+//Updates ball position when it moves
 public Vector2 UpdateBallPosition(DifferentBalls DifferentBalls)
 {
     DifferentBalls.BallCenter = MoveGeneratedBall(DifferentBalls.BallCenter);
     return DifferentBalls.BallCenter;
 }
+//Checks is ball is falling down
 public bool CheckBallFall(DifferentBalls DifferentBalls)
 {
     var StillFalling = true;
@@ -432,7 +496,7 @@ public bool CheckBallFall(DifferentBalls DifferentBalls)
     }
     return StillFalling;
 }
-
+//Moves power up ball
 public Vector2 MoveGeneratedBall(Vector2 Ball)
 {
     Ball.Y += 5;

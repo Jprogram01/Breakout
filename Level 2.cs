@@ -1,11 +1,11 @@
-class Level2: ObjectMovement
+class Level2: ObjectInteraction
 {
 
 public Level2()
 {
     DictionaryLoader(2);
 }
-public bool NextLevelChecker()
+new public bool NextLevelChecker()
 {
     int LinesCleared = 0;
     bool Cleared = false;

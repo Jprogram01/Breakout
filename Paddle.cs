@@ -6,7 +6,7 @@ using static Raylib_cs.PixelFormat;
 
 
 
-
+// Sets up the paddle object, and also moves it around.
 class Paddle: MovementDirection
 {
 
