@@ -1,2 +1,2 @@
 # BreakOut
- Game Where you destory the blocks.
+An undergraduate's attempt to recreate the game Breakout
